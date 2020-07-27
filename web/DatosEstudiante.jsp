@@ -1,10 +1,9 @@
 <%-- 
     Document   : DatosEstudiante
-    Created on : 25/07/2020, 08:43:29 PM
-    Author     : Julio Larico
+    Created on : 27/07/2020, 01:07:59 AM
+    Author     : Santiago
 --%>
-
-<%@page import="java.sql.*" %>
+ <%@page import="java.sql.*" %>
 <%@page import="bd.*" %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -22,11 +21,11 @@
             ResultSet rs;
             String s_accion;
             String s_idestudiante;
-            String s_nombre;
+            String s_nombres;
             String s_apellidos;
-            String s_dni;
             String s_codigo;
-            String s_estado;
+            String s_dni;
+            
         %>
     </head>
     <body>       
@@ -38,7 +37,7 @@
                 s_idestudiante = request.getParameter("f_idestudiante");
                 // Primera parte del modificar
                 if (s_accion != null && s_accion.equals("M1")) {
-                    consulta = " select nombre, apellidos, dni, codigo, estado "
+                    consulta = " select nombres, apellidos, codigo, dni "
                             + " from estudiante "
                             + " where "
                             + " idestudiante = " + s_idestudiante;
@@ -57,24 +56,21 @@
                 <tbody>
                     <tr>
                         <td>Nombres:</td>
-                        <td><input type="text" name="f_nombre" value="<% out.print(rs.getString(1)); %>" maxlength="30" size="25" /></td>
+                        <td><input type="text" name="f_nombres" value="<% out.print(rs.getString(1)); %>" maxlength="30" size="25" /></td>
                     </tr>
                     <tr>
                         <td>Apellidos:</td>
                         <td><input type="text" name="f_apellidos" value="<% out.print(rs.getString(2)); %>" maxlength="40" size="25"/></td>
                     </tr>
                     <tr>
+                        <td>Codigo: </td>
+                        <td><input type="text" name="f_codigo" value="<% out.print(rs.getString(3)); %>" maxlength="12" size="15" /></td>
+                    </tr>
+                    <tr>
                         <td>DNI: </td>
-                        <td><input type="text" name="f_dni" value="<% out.print(rs.getString(3)); %>" maxlength="8" size="8" /></td>
+                        <td><input type="text" name="f_dni" value="<% out.print(rs.getString(4)); %>" maxlength="8" size="8" /></td>
                     </tr>
-                    <tr>
-                        <td>Código: </td>
-                        <td><input type="text" name="f_codigo" value="<% out.print(rs.getString(4)); %>" maxlength="12" size="15" /></td>
-                    </tr>
-                    <tr>
-                        <td>Estado: </td>
-                        <td><input type="text" name="f_estado" value="<% out.print(rs.getString(5)); %>" maxlength="1" size="2" /></td>
-                    </tr>
+                    
                     <tr align="center">
                         <td colspan="2">
                             <input type="submit" value="Editar" name="f_editar" />
@@ -88,8 +84,7 @@
         <%
             }
         } else {
-            // Si no se hace la primera parte del modidicar debe mostrar el 
-            // formulario de agregar estudiante
+            
         %>
         <form name="AgregarEstudianteForm" action="DatosEstudiante.jsp" method="GET">
             <table border="0" align="center" class="ecologico" style="margin: auto; display: table">
@@ -101,24 +96,21 @@
                 <tbody>
                     <tr>
                         <td>Nombres:</td>
-                        <td><input type="text" name="f_nombre" value="" maxlength="30" size="25" /></td>
+                        <td><input type="text" name="f_nombres" value="" maxlength="30" size="25" /></td>
                     </tr>
                     <tr>
                         <td>Apellidos:</td>
                         <td><input type="text" name="f_apellidos" value="" maxlength="40" size="25"/></td>
                     </tr>
                     <tr>
+                        <td>Codigo: </td>
+                        <td><input type="text" name="f_codigo" value=""maxlength="12" size="15" /></td>
+                    </tr>
+                    <tr>
                         <td>DNI: </td>
-                        <td><input type="text" name="f_dni" value=""maxlength="8" size="8" /></td>
+                        <td><input type="text" name="f_dni" value="" maxlength="8" size="8" /></td>
                     </tr>
-                    <tr>
-                        <td>Código: </td>
-                        <td><input type="text" name="f_codigo" value="" maxlength="12" size="15" /></td>
-                    </tr>
-                    <tr>
-                        <td>Estado: </td>
-                        <td><input type="text" name="f_estado" value="" maxlength="1" size="2" /></td>
-                    </tr>
+  
                     <tr align="center">
                         <td colspan="2">
                             <input type="submit" value="Agregar" name="f_agregar" />
@@ -140,65 +132,62 @@
                 </tr>
                 <tr>
                     <th>#</th>
-                    <th>Nombre</th>
+                    <th>Nombres</th>
                     <th>Apellidos</th>
+                    <th>Codigo</th>
                     <th>DNI</th>
-                    <th>Código</th>
-                    <th>Estado</th>
+                    
                     <th colspan="2">Acciones</th>
-
                 </tr>
             </thead>       
             <%
                 if (s_accion != null) {
-                    // Ejecutar la eliminación de estudiantes
+                    
                     if (s_accion.equals("E")) {
                         consulta = " delete from estudiante "
                                 + " where  "
                                 + " idestudiante = " + s_idestudiante + "; ";
-                        //out.print(consulta);
+                        
                         pst = cn.prepareStatement(consulta);
                         pst.executeUpdate();
-                        // Sino se elimina registros de estudiantes, 
-                        // Pregunta si se va a REGISTRAR UN NUEVO ESTUDIANTE
+                        
                     } else if (s_accion.equals("C")) {
-                        s_nombre = request.getParameter("f_nombre");
+                        s_nombres = request.getParameter("f_nombres");
                         s_apellidos = request.getParameter("f_apellidos");
-                        s_dni = request.getParameter("f_dni");
                         s_codigo = request.getParameter("f_codigo");
-                        s_estado = request.getParameter("f_estado");
+                        s_dni = request.getParameter("f_dni");
+                    
                         consulta = " insert into "
-                                + " estudiante (nombre, apellidos, dni, codigo, estado)"
-                                + " values('" + s_nombre + "','" + s_apellidos + "','" + s_dni + "','" + s_codigo + "','" + s_estado + "');  ";
-                        //out.print(consulta);
+                                + " estudiante (nombres, apellidos, codigo, dni) "
+                                + " values('" + s_nombres + "','" + s_apellidos + "','" + s_codigo + "','" + s_dni + "');  ";
+                        
                         pst = cn.prepareStatement(consulta);
                         pst.executeUpdate();
-                        // Si no se está creando o eliminando registro de estudiante
-                        // Pregunta si va a hacer la MODIFICACIÓN DE ESTUDIANTES - Parte 2
-                    } else if (s_accion.equals("M2")) {
-                        s_nombre = request.getParameter("f_nombre");
-                        s_apellidos = request.getParameter("f_apellidos");
-                        s_dni = request.getParameter("f_dni");
-                        s_codigo = request.getParameter("f_codigo");
-                        s_estado = request.getParameter("f_estado");
-                        consulta = "   update estudiante  "
-                                + " set  "
-                                + " nombre = '" + s_nombre + "', "
-                                + " apellidos = '" + s_apellidos + "', "
-                                + " dni = '" + s_dni + "', "
-                                + " codigo = '" + s_codigo + "', "
-                                + " estado = '" + s_estado + "'  "
-                                + " where  "
-                                + " idestudiante = " + s_idestudiante + "; ";
-                        //out.print(consulta);
-                        pst = cn.prepareStatement(consulta);
-                        pst.executeUpdate();
-                    }
+                       
+                    }else if (s_accion.equals("M2")) {
+                            s_nombres = request.getParameter("f_nombres");
+                            s_apellidos = request.getParameter("f_apellidos");
+                            s_dni = request.getParameter("f_dni");
+                            s_codigo = request.getParameter("f_codigo");
+                   
+                            consulta =  " update estudiante "
+                                        + " set "
+                                        + " nombres = '"+ s_nombres +"', "
+                                        + " apellidos = '" + s_apellidos + "', "
+                                        + " codigo = '" + s_codigo + "', "
+                                        + " dni = '" + s_dni + "' "                                     
+                                        + " where "
+                                        + " idestudiante = " + s_idestudiante + "; ";
+                            //out.print(consulta);
+                            pst = cn.prepareStatement(consulta);
+                            pst.executeUpdate();
                 }
-                // Listar los estudiantes de la TABLA ESTUDIANTE
-                consulta = " Select idestudiante, nombre, apellidos, dni, codigo, estado "
+                }
+                
+                
+                consulta = " Select idestudiante, nombres, apellidos, codigo, dni "
                         + " from estudiante ";
-                //out.print(consulta);
+              
                 pst = cn.prepareStatement(consulta);
                 rs = pst.executeQuery();
                 int num = 0;
@@ -213,13 +202,14 @@
                 <td><%out.print(rs.getString(3));%></td>
                 <td><%out.print(rs.getString(4));%></td>
                 <td><%out.print(rs.getString(5));%></td>
-                <td><%out.print(rs.getString(6));%></td>
-                <td><a href="DatosEstudiante.jsp?f_accion=E&f_idestudiante=<%out.print(ide);%>">Eliminar</a></td>
-                <td><a href="DatosEstudiante.jsp?f_accion=M1&f_idestudiante=<%out.print(ide);%>">Editar</a></td>                        
+                <td><a href="DatosEstudiante.jsp?f_accion=E&f_idestudiante=<%out.print(ide);%>"><img src="eliminar.jpg" width="30" height="30" alt="Eliminar"/>
+                    </a></td>
+                    <td><a href="DatosEstudiante.jsp?f_accion=M1&f_idestudiante=<%out.print(ide);%>"><img src="editar.png" width="30" height="30" alt="Editar"/>
+                        </a></td>                        
             </tr>                    
             <%
                     }
-                    // Se cierra todas las conexiones
+                    
                     rs.close();
                     pst.close();
                     cn.close();
@@ -228,5 +218,6 @@
                 }
             %>
         </table>
+        <a href="menu.jsp">Regresar al menú</a>
     </body>
 </html>

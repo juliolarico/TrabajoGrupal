@@ -33,7 +33,6 @@ table.general tbody tr:hover {
 /*
 Estilo ecológico para tablas: basado en el verde
 */
-
 table.ecologico {
     border-collapse: collapse;
 }
